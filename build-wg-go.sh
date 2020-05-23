@@ -5,7 +5,6 @@ set -x
 set -e
 
 # Initialise build environment
-apk add --no-cache git
 GOPATH=`pwd` go get -v -d golang.zx2c4.com/wireguard
 
 # Build
