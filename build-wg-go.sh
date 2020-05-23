@@ -9,4 +9,4 @@ apk add --no-cache git
 GOPATH=`pwd` go get -v -d golang.zx2c4.com/wireguard
 
 # Build
-GOPATH=`pwd` GOOS=linux GOARCH=amd64 go build -o wireguard-go `find . -type d -name "wireguard"`
+GOPATH=`pwd` GOOS=linux GOARCH=amd64 go build -v -o wireguard-go `find . -type d -name "wireguard"`
