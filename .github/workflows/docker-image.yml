@@ -1,0 +1,33 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Prepare workspace
+      run: mkdir workspace
+    - name: Build the WireGuard binary (wireguard-go)
+      run: cat build-wg-go.sh | docker run -v="$PWD/workspace:/workspace" -w="/workspace" golang:alpine sh
+    - name: Get version
+      id: ver
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: $(./workspace/wireguard-go --version | head -n 1 | cut -d ' ' -f 2)
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
