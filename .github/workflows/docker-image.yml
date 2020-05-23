@@ -23,14 +23,25 @@ jobs:
         ls ./workspace/wireguard-go
     - name: Get version
       id: getver
-      run: ./workspace/wireguard-go --version | head -n 1 | cut -d ' ' -f 2
+      run: echo "::set-output name=body::`./workspace/wireguard-go --version | head -n 1 | cut -d ' ' -f 2`"
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.getver.outputs }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+        tag_name: ${{ steps.getver.outputs.body }}
+        release_name: Release ${{ steps.getver.outputs.body }}
+        body: Binary build for Linux system with amd64 architecture.
+        draft: true
+        prerelease: true
+    - name: Upload Release Asset
+      id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./workspace/wireguard-go
+          asset_name: wireguard-go
+          asset_content_type: application/octet-stream
