@@ -19,7 +19,7 @@ jobs:
       run: mkdir workspace
     - name: Build the WireGuard binary (wireguard-go)
       run: |
-        cat build-wg-go.sh | docker run --rm -i -v="$PWD/workspace:/workspace" -w="/workspace" golang:alpine sh
+        cat build-wg-go.sh | docker run --rm -i -v="$PWD/workspace:/workspace" -w="/workspace" golang:latest sh
         ls ./workspace/wireguard-go
     - name: Get version
       id: getver
