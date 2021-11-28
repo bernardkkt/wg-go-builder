@@ -16,8 +16,5 @@ NEW_PATH=`dirname $(find . -type f -name "go.mod" | grep "wireguard")`
 cd ${NEW_PATH}
 for CFG in ${OSARCHCFG}
 do
-	GOOS=`echo ${CFG} | cut -d ':' -f 1`
-	GOARCH=`echo ${CFG} | cut -d ':' -f 2`
-	GOPATH=${OLD_PATH}
-	go build -v -o "${OLD_PATH}/`echo ${CFG} | cut -d ':' -f 3`"
+	GOOS=`echo ${CFG} | cut -d ':' -f 1` GOARCH=`echo ${CFG} | cut -d ':' -f 2` GOPATH=${OLD_PATH} go build -v -o "${OLD_PATH}/`echo ${CFG} | cut -d ':' -f 3`"
 done
