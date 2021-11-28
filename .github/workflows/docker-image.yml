@@ -46,6 +46,7 @@ jobs:
               console.log('uploadReleaseAsset', file);
               console.log(context.repo.owner);
               console.log(context.repo.repo);
+              console.log(release_id);
               await github.repos.uploadReleaseAsset({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
