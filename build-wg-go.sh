@@ -11,4 +11,4 @@ GOPATH=`pwd` go get -v -d golang.zx2c4.com/wireguard
 OLD_PATH=`pwd`
 NEW_PATH=`dirname $(find . -type f -name "go.mod" | grep "wireguard")`
 cd ${NEW_PATH}
-GOPATH=${OLD_PATH} GOOS=linux GOARCH=amd64 go build -v -o "${OLD_PATH}/wireguard-go"
+GOPATH=${OLD_PATH} GOOS=darwin GOARCH=arm64 go build -v -o "${OLD_PATH}/wireguard-go"
