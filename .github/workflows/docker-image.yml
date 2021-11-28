@@ -20,7 +20,7 @@ jobs:
     - name: Build the WireGuard binary (wireguard-go)
       run: |
         cat build-wg-go.sh | docker run --rm -i -v="$PWD/workspace:/workspace" -w="/workspace" golang:latest sh
-        ls ./workspace/wireguard-go
+        ls ./workspace/wireguard-go*
     - name: Get version
       id: getver
       run: echo "::set-output name=body::`./workspace/wireguard-go --version | head -n 1 | cut -d ' ' -f 2`"
@@ -32,16 +32,27 @@ jobs:
       with:
         tag_name: ${{ steps.getver.outputs.body }}
         release_name: Release ${{ steps.getver.outputs.body }}
-        body: Binary build for Linux system with amd64 architecture.
-        draft: false
+        body: Binary build of WireGuard written in Golang.
+        draft: true
         prerelease: false
     - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: upload-release-asset
+      uses: actions/github-script@v3
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./workspace/wireguard-go
-        asset_name: wireguard-go
-        asset_content_type: application/octet-stream
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const path = require('path');
+          const fs = require('fs');
+          const release_id = '${{ steps.create_release.outputs.id }}';
+          for (let file of await fs.readdirSync('./workspace/')) {
+            if (file.startsWith("wireguard-go")) {
+              console.log('uploadReleaseAsset', file);
+              await github.repos.uploadReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: release_id,
+                name: file,
+                data: await fs.readFileSync(`./workspace/${file}`)
+              });
+            }
+          }
