@@ -44,6 +44,8 @@ jobs:
           for (let file of await fs.readdirSync('./workspace/')) {
             if (file.startsWith("wireguard-go")) {
               console.log('uploadReleaseAsset', file);
+              console.log(context.repo.owner);
+              console.log(context.repo.repo);
               await github.repos.uploadReleaseAsset({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
