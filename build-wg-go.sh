@@ -8,12 +8,11 @@ set -e
 GOPATH=`pwd` go get -v -d golang.zx2c4.com/wireguard
 
 # Build
-IFS=' ' read -r -a OSARCH <<< "linux:amd64:wireguard-go windows:amd64:wireguard-go.exe darwin:amd64:wireguard-go-darwin"
+OSARCHCFG="linux:amd64:wireguard-go windows:amd64:wireguard-go.exe darwin:amd64:wireguard-go-darwin"
 OLD_PATH=`pwd`
 NEW_PATH=`dirname $(find . -type f -name "go.mod" | grep "wireguard")`
 cd ${NEW_PATH}
-for config in "${OSARCH[@]}"
+for CFG in ${OSARCHCFG}
 do
-	IFS=':' read -r -a item <<< "$config"
-	GOPATH=${OLD_PATH} GOOS=${item[0]} GOARCH=${item[1]} go build -v -o "${OLD_PATH}/${item[2]}"
+	GOPATH=${OLD_PATH} GOOS=`echo ${CFG} | cut -d ':' -f 1` GOARCH=`echo ${CFG} | cut -d ':' -f 2` go build -v -o "${OLD_PATH}/`echo ${CFG} | cut -d ':' -f 1`"
 done
