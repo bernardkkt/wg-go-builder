@@ -32,7 +32,7 @@ jobs:
       with:
         tag_name: ${{ steps.getver.outputs.body }}
         release_name: Release ${{ steps.getver.outputs.body }}
-        body: Binary build for Linux system with amd64 architecture.
+        body: Binary build of WireGuard written in Golang.
         draft: true
         prerelease: false
     - name: Upload Release Asset
